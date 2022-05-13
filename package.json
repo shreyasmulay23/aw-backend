@@ -1,0 +1,25 @@
+{
+  "name": "aw-backend",
+  "version": "1.0.0",
+  "description": "Anything World backend APIs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shreyasmulay23/aw-backend.git"
+  },
+  "author": "Shreyas Mulay",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shreyasmulay23/aw-backend/issues"
+  },
+  "homepage": "https://github.com/shreyasmulay23/aw-backend#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "express": "^4.18.1",
+    "node-cache": "^5.1.2"
+  }
+}
