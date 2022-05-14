@@ -5,18 +5,20 @@ const apiContext = require("./api");
 const url = require("url");
 const dotenv = require("dotenv");
 const utils = require("./util");
+var cors = require("cors");
 dotenv.config();
 
 const app = express();
 
 app.use(express.json()); // to accept json data
+app.use(cors());
 
 const cache = new NodeCache({ stdTTL: 0 });
 
 const verifyCache = (req, res, next) => {
   try {
     const { search } = url.parse(req.url, true).query;
-    if (cache.has(search)) {
+    if (search && cache.has(search)) {
       return res.status(200).json(cache.get(search));
     }
     return next();
@@ -35,7 +37,7 @@ app.get("/api/anything/clear-cache", (req, res) => {
 });
 
 app.get("/api/anything", verifyCache, async (req, res) => {
-  const { search, fuzzy } = url.parse(req.url, true).query;
+  const { search, fuzzy, name } = url.parse(req.url, true).query;
   try {
     const API_KEY = req.get("API_KEY");
     let url = apiContext.anythingContext;
@@ -51,9 +53,14 @@ app.get("/api/anything", verifyCache, async (req, res) => {
     if (fuzzy !== undefined) {
       url = url + `&fuzzy=${fuzzy}`;
     }
+    if (name !== undefined) {
+      url = url + `&name=${name}`;
+    }
     const { data } = await axios.get(url);
     const sanitizedList = utils.sanitizeData(data);
-    cache.set(search, sanitizedList);
+    if (!name) {
+      cache.set(search, sanitizedList);
+    }
     return res.status(200).json(sanitizedList);
   } catch (error) {
     if (error.response && error.response.status) {

@@ -5,14 +5,27 @@ const sanitizeData = (data) => {
     // Get only required attributes from JSON Payload
     const filteredList = data
       .filter((it) => it.type.startsWith("quadruped"))
-      .map(({ name, searchName, type, thumbnails, scale, model }) => ({
-        name,
-        searchName,
-        type,
-        thumbnails,
-        scale,
-        model,
-      }));
+      .map(
+        ({
+          _id,
+          name,
+          author,
+          searchName,
+          type,
+          thumbnails,
+          scale,
+          model,
+        }) => ({
+          _id,
+          name,
+          author,
+          searchName,
+          type,
+          thumbnails,
+          scale,
+          model,
+        })
+      );
     // Discard the models that are not rigged or do not have thumbnails
     filteredList.forEach((perModel) => {
       if (checkForValidModel(perModel)) {
