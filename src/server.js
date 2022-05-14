@@ -56,7 +56,10 @@ app.get("/api/anything", verifyCache, async (req, res) => {
     cache.set(search, sanitizedList);
     return res.status(200).json(sanitizedList);
   } catch (error) {
-    return res.status(error.response.status).json(error.response.data);
+    if (error.response && error.response.status) {
+      return res.status(error.response.status).json(error.response.data);
+    }
+    return res.status(500).json({ error: error.message });
   }
 });
 
