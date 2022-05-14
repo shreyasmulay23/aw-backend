@@ -4,6 +4,7 @@ const axios = require("axios");
 const apiContext = require("./api");
 const url = require("url");
 const dotenv = require("dotenv");
+const utils = require("./util");
 dotenv.config();
 
 const app = express();
@@ -51,8 +52,9 @@ app.get("/api/anything", verifyCache, async (req, res) => {
       url = url + `&fuzzy=${fuzzy}`;
     }
     const { data } = await axios.get(url);
-    cache.set(search, data);
-    return res.status(200).json(data);
+    const sanitizedList = utils.sanitizeData(data);
+    cache.set(search, sanitizedList);
+    return res.status(200).json(sanitizedList);
   } catch (error) {
     return res.status(error.response.status).json(error.response.data);
   }
