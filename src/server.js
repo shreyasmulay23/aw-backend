@@ -3,6 +3,8 @@ const NodeCache = require("node-cache");
 const axios = require("axios");
 const apiContext = require("./api");
 const url = require("url");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const app = express();
 
@@ -35,14 +37,20 @@ app.get("/api/anything", verifyCache, async (req, res) => {
   const { search, fuzzy } = url.parse(req.url, true).query;
   try {
     const API_KEY = req.get("API_KEY");
+    let url = apiContext.anythingContext;
     if (!API_KEY) {
       return res
         .status(400)
         .json({ status: 400, message: "API_KEY not provided in headers." });
     }
-    const { data } = await axios.get(
-      `${apiContext.anythingContext}?key=${API_KEY}&search=${search}&fuzzy=${fuzzy}`
-    );
+    url = url + `key=${API_KEY}`;
+    if (search !== undefined) {
+      url = url + `&search=${search}`;
+    }
+    if (fuzzy !== undefined) {
+      url = url + `&fuzzy=${fuzzy}`;
+    }
+    const { data } = await axios.get(url);
     cache.set(search, data);
     return res.status(200).json(data);
   } catch (error) {
@@ -64,4 +72,4 @@ const start = (port) => {
   }
 };
 
-start(3333);
+start(process.env.PORT || 3333);

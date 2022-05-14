@@ -1,3 +1,3 @@
-module.exports =  apiContext = {
-  anythingContext: `https://api.anything.world/anything`,
+module.exports = apiContext = {
+  anythingContext: `https://api.anything.world/anything?`,
 };
